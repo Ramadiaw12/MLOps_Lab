@@ -1,0 +1,41 @@
+Unable to find image 'python:3.12-slim' locally
+3.12-slim: Pulling from library/python
+6fc242d221a6: Pulling fs layer
+3eb771151506: Pulling fs layer
+f574edac59d9: Pulling fs layer
+acca7542dfc7: Pulling fs layer
+acca7542dfc7: Waiting
+3eb771151506: Verifying Checksum
+3eb771151506: Download complete
+acca7542dfc7: Verifying Checksum
+f574edac59d9: Verifying Checksum
+f574edac59d9: Download complete
+6fc242d221a6: Verifying Checksum
+6fc242d221a6: Download complete
+6fc242d221a6: Pull complete
+3eb771151506: Pull complete
+f574edac59d9: Pull complete
+acca7542dfc7: Pull complete
+Digest: sha256:b18b261e1b4974b4f321451ad5251ded85abb22c2b8b262da527dda1d031ab30
+Status: Downloaded newer image for python:3.12-slim
+{
+  "version": 1,
+  "model_type": "logreg",
+  "accuracy": 0.775,
+  "precision": 0.8214,
+  "recall": 0.8519,
+  "f1": 0.8364,
+  "confusion_matrix": [
+    [
+      40,
+      25
+    ],
+    [
+      20,
+      115
+    ]
+  ],
+  "n_train": 800,
+  "n_test": 200
+}
+✅ Artefacts v1 écrits dans /work/artifacts

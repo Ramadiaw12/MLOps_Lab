@@ -1,0 +1,44 @@
+=== DIAGNOSTIC MLOps Lab — lun. 02 nov. 2026 17:06:02 +00 ===
+--- Architecture ---
+x86_64
+--- Système d'exploitation ---
+PRETTY_NAME="Ubuntu 24.04.3 LTS"
+VERSION_ID="24.04"
+--- Docker ---
+Docker version 29.1.2, build 890dcca
+Docker Compose version v5.6.0
+--- Moteur Docker ---
+Server: 29.8.0 | OS: Ubuntu Core 24 | Arch: x86_64 | CPUs: 12
+--- Python ---
+Python 3.12.2
+--- Outils ---
+git      /usr/bin/git
+curl     /home/superrama/anaconda3/bin/curl
+python3  /home/superrama/anaconda3/bin/python3
+pip3     /home/superrama/anaconda3/bin/pip3
+node     /home/superrama/.nvm/versions/node/v22.21.1/bin/node
+--- Ports 5000 / 8501 ---
+5000 libre
+8501 libre
+--- Navigateurs ---
+Chromium : /snap/bin/chromium
+Firefox : /usr/bin/firefox
+--- Disque ---
+/dev/nvme0n1p5     134G    123G  3,9G  97% /
+--- Dossier projet ---
+/home/superrama/MLOPS-LAB-STUDENT-SUCCESS_pack_etudiant/MLOPS-LAB-STUDENT-SUCCESS
+api
+artifacts
+colab
+compose.yaml
+data
+Dockerfile.api
+Dockerfile.frontend
+docs
+frontend
+nginx
+README.md
+requirements.txt
+scripts
+tests
+training

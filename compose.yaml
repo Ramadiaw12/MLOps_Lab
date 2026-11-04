@@ -1,0 +1,41 @@
+# Docker Compose — laboratoire MLOps « Student Success »
+# Deux services sur un réseau privé ; ports publiés uniquement sur 127.0.0.1 (localhost du Mac).
+name: mlops-lab-student-success
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    image: mlops-lab/api:latest
+    container_name: mlops-api
+    ports:
+      - "127.0.0.1:${API_PORT:-5001}:5000"   # accès direct à l'API (5001 car macOS AirPlay occupe 5000)
+    environment:
+      - MODEL_FILE=${MODEL_FILE:-model.joblib}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:5000/health', timeout=2).status==200 else 1)"]
+      interval: 15s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    networks: [mlops-net]
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    image: mlops-lab/frontend:latest
+    container_name: mlops-frontend
+    ports:
+      - "127.0.0.1:8501:80"        # le site : http://127.0.0.1:8501
+    depends_on:
+      api:
+        condition: service_healthy
+    networks: [mlops-net]
+    restart: unless-stopped
+
+networks:
+  mlops-net:
+    driver: bridge
