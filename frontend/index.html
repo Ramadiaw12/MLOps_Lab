@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MLOps Lab — Student Success · ENSET Mohammedia</title>
+<meta name="description" content="Laboratoire pédagogique MLOps : de Google Colab à Docker Desktop, prédiction de réussite étudiante (données synthétiques).">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231f4fd8'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='Arial' font-weight='700'>ML</text></svg>">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar" aria-label="Navigation du laboratoire">
+    <div class="brand">
+      <div class="logo">ML</div>
+      <div><strong>MLOps Lab</strong><small>Student Success · ENSET</small></div>
+    </div>
+    <nav class="nav" id="nav">
+      <div class="grp">Démarrer</div>
+      <a href="#accueil"><span class="n">1</span>Accueil</a>
+      <a href="#projet"><span class="n">2</span>Présentation du projet</a>
+      <a href="#architecture"><span class="n">3</span>Architecture MLOps</a>
+      <a href="#outils"><span class="n">4</span>Préparation des outils</a>
+      <div class="grp">Machine Learning</div>
+      <a href="#dataset"><span class="n">5</span>Dataset</a>
+      <a href="#colab"><span class="n">6</span>Google Colab</a>
+      <a href="#pretraitement"><span class="n">7</span>Prétraitement</a>
+      <a href="#training"><span class="n">8</span>Training</a>
+      <a href="#evaluation"><span class="n">9</span>Évaluation</a>
+      <a href="#artefacts"><span class="n">10</span>Artefacts</a>
+      <div class="grp">Déploiement</div>
+      <a href="#api"><span class="n">11</span>API Flask</a>
+      <a href="#docker"><span class="n">12</span>Docker</a>
+      <a href="#deploiement"><span class="n">13</span>Déploiement</a>
+      <a href="#simulateur"><span class="n">14</span>Simulateur de prédiction</a>
+      <div class="grp">Exploitation</div>
+      <a href="#monitoring"><span class="n">15</span>Monitoring</a>
+      <a href="#versionnement"><span class="n">16</span>Versionnement</a>
+      <a href="#tests"><span class="n">17</span>Tests</a>
+      <div class="grp">S'entraîner</div>
+      <a href="#exercices"><span class="n">18</span>Exercices</a>
+      <a href="#qcm"><span class="n">19</span>QCM</a>
+      <a href="#glossaire"><span class="n">20</span>Glossaire</a>
+      <a href="#depannage"><span class="n">21</span>Dépannage</a>
+    </nav>
+    <div class="status-pill" id="apiStatus"><span class="dot"></span>API : vérification…</div>
+  </aside>
+
+  <main>
+    <div class="topbar">
+      <div class="row">
+        <button class="hamb btn-sm" id="hamb" aria-label="Ouvrir le menu">☰ Menu</button>
+        <div class="crumbs" id="crumbs">MLOps Lab · Accueil</div>
+      </div>
+      <div class="row">
+        <span class="tag real" id="modeTag">● Modèle réel : connexion…</span>
+        <span class="tag" id="versionTag">version —</span>
+      </div>
+    </div>
+
+    <!-- 1. ACCUEIL -->
+    <section class="page" id="accueil" data-title="Accueil">
+      <h1>MLOps Lab — Student Success</h1>
+      <p class="lead">De l'expérimentation dans <strong>Google Colab</strong> au déploiement avec <strong>Docker Desktop</strong> : construire, entraîner, évaluer, sauvegarder, déployer, surveiller et mettre à jour un modèle de Machine Learning.</p>
+      <div class="grid grid-4">
+        <div class="card kpi"><span class="v" id="kAcc">—</span><span class="l">Accuracy du modèle actif</span></div>
+        <div class="card kpi"><span class="v" id="kVer">—</span><span class="l">Version déployée</span></div>
+        <div class="card kpi"><span class="v" id="kPred">—</span><span class="l">Prédictions servies</span></div>
+        <div class="card kpi"><span class="v" id="kLat">—</span><span class="l">Latence moyenne (ms)</span></div>
+      </div>
+      <div class="callout warn" style="margin-top:18px"><b>⚠️ Avertissement pédagogique</b>Le dataset est <strong>100 % synthétique</strong> et le modèle est une <strong>démonstration</strong>. Il ne doit jamais servir à prendre une décision académique réelle concernant un étudiant.</div>
+      <div class="grid grid-3" style="margin-top:14px">
+        <div class="card"><h3>🎯 Ce que vous allez apprendre</h3><ul><li>Le cycle de vie complet d'un modèle ML</li><li>Entraîner et évaluer dans Colab</li><li>Exposer un modèle via une API REST Flask</li><li>Conteneuriser avec Docker &amp; Compose</li><li>Surveiller, versionner, réentraîner</li></ul></div>
+        <div class="card"><h3>🧰 Outils</h3><ul><li>Google Colab (Python, scikit-learn)</li><li>Terminal macOS</li><li>Docker Desktop (Apple Silicon)</li><li>Navigateur web</li></ul></div>
+        <div class="card"><h3>🚀 Parcours conseillé</h3><ol><li>Sections 1 → 4 : comprendre et préparer</li><li>Sections 5 → 10 : Machine Learning</li><li>Sections 11 → 14 : déployer et prédire</li><li>Sections 15 → 21 : exploiter, s'évaluer</li></ol></div>
+      </div>
+      <h3>Pipeline MLOps animé <span class="tag sim">Simulation</span></h3>
+      <div class="sim" id="simPipeline">
+        <header><div><b>Objectif :</b> visualiser les 8 étapes du cycle de vie d'un modèle. <b>Consigne :</b> cliquez sur « Lancer ».</div>
+          <div class="row"><button class="btn-primary btn-sm" data-act="pipe-run">▶ Lancer</button><button class="btn-sm" data-act="pipe-reset">↺ Réinitialiser</button></div></header>
+        <div class="pipeline" id="pipeline">
+          <div class="st"><div class="ic">📊</div>Données</div><div class="st"><div class="ic">🧹</div>Préparation</div><div class="st"><div class="ic">🏋️</div>Entraînement</div><div class="st"><div class="ic">📏</div>Évaluation</div>
+          <div class="st"><div class="ic">🏷️</div>Versionnement</div><div class="st"><div class="ic">🚀</div>Déploiement</div><div class="st"><div class="ic">📡</div>Surveillance</div><div class="st"><div class="ic">🔁</div>Réentraînement</div>
+        </div>
+        <div class="out" id="pipeOut">Prêt. Chaque étape sera expliquée au passage.</div>
+        <div class="expl"><b>Vérification :</b> à la fin, les 8 étapes doivent être vertes et la boucle « Surveillance → Réentraînement → Données » doit être comprise comme un cycle, pas une ligne.</div>
+      </div>
+    </section>
+
+    <!-- 2. PROJET -->
+    <section class="page" id="projet" data-title="Présentation du projet">
+      <h2>2. Présentation du projet</h2>
+      <p class="lead">Scénario : une école souhaite repérer tôt les étudiants en difficulté pour leur proposer un accompagnement. Nous construisons un <em>prototype</em> qui prédit la réussite à partir de trois indicateurs.</p>
+      <div class="grid grid-2">
+        <div class="card"><h3>Variables d'entrée (features)</h3>
+          <table><tr><th>Variable</th><th>Signification</th><th>Plage</th></tr>
+          <tr><td><code>note</code></td><td>Moyenne sur 20</td><td>0 – 20</td></tr>
+          <tr><td><code>absences</code></td><td>Nombre d'absences</td><td>0 – 30</td></tr>
+          <tr><td><code>participation</code></td><td>Score de participation</td><td>0 – 10</td></tr></table></div>
+        <div class="card"><h3>Variable cible (target)</h3>
+          <p><code>reussite</code> : <strong>1</strong> = réussite probable, <strong>0</strong> = risque d'échec.</p>
+          <p>C'est une <strong>classification binaire</strong> : le modèle répond à une question oui/non, avec une probabilité.</p>
+          <div class="callout"><b>À retenir</b>Les features sont ce que l'on <em>connaît</em>, la target est ce que l'on <em>veut deviner</em>.</div></div>
+      </div>
+      <h3>Pourquoi le MLOps et pas seulement du Machine Learning ?</h3>
+      <p>Un notebook qui affiche une accuracy de 0,78 n'est pas un service. Pour être utile, le modèle doit être <strong>sauvegardé</strong>, <strong>déployé</strong> dans une API, <strong>surveillé</strong> et <strong>mis à jour</strong> quand les données changent. Le MLOps applique au ML les pratiques du DevOps (Git, conteneurs, tests, automatisation) en y ajoutant la gestion des <em>données</em> et des <em>modèles</em>.</p>
+      <div class="callout ok"><b>Lien avec le cours</b>Ce laboratoire prolonge le support « Introduction au MLOps » (HESTIM / ENSET) : le fil rouge « réussite étudiante » y est introduit ; ici nous le réalisons de bout en bout.</div>
+    </section>
+
+    <!-- 3. ARCHITECTURE -->
+    <section class="page" id="architecture" data-title="Architecture MLOps">
+      <h2>3. Architecture MLOps du laboratoire</h2>
+      <p class="lead">Deux environnements, trois artefacts, deux conteneurs.</p>
+      <div class="card"><svg viewBox="0 0 980 330" width="100%" role="img" aria-label="Schéma d'architecture">
+        <defs><marker id="ar" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#5b6b85"/></marker></defs>
+        <rect x="20" y="30" width="300" height="250" rx="14" fill="#fff7e6" stroke="#f4c27a"/><text x="40" y="60" font-size="15" font-weight="700" fill="#b45309">☁️ Google Colab (expérimentation)</text>
+        <rect x="40" y="80" width="260" height="38" rx="8" fill="#fff" stroke="#e5e9f0"/><text x="55" y="104" font-size="13">1. Dataset synthétique (CSV)</text>
+        <rect x="40" y="128" width="260" height="38" rx="8" fill="#fff" stroke="#e5e9f0"/><text x="55" y="152" font-size="13">2. Entraînement scikit-learn</text>
+        <rect x="40" y="176" width="260" height="38" rx="8" fill="#fff" stroke="#e5e9f0"/><text x="55" y="200" font-size="13">3. Évaluation (accuracy, F1, matrice)</text>
+        <rect x="40" y="224" width="260" height="38" rx="8" fill="#e8eefc" stroke="#1f4fd8"/><text x="55" y="248" font-size="13" font-weight="600">4. Export des 3 artefacts (versions)</text>
+        <line x1="320" y1="155" x2="400" y2="155" stroke="#5b6b85" stroke-width="2" marker-end="url(#ar)"/><text x="333" y="143" font-size="11" fill="#5b6b85">artefacts</text>
+        <rect x="400" y="30" width="560" height="280" rx="14" fill="#eef6ff" stroke="#93b4ff"/><text x="420" y="60" font-size="15" font-weight="700" fill="#1f4fd8">💻 Mac + Docker Desktop (production locale)</text>
+        <rect x="420" y="80" width="240" height="200" rx="10" fill="#fff" stroke="#1f4fd8"/><text x="435" y="104" font-size="13" font-weight="700">Conteneur « frontend »</text><text x="435" y="126" font-size="12">Nginx · port 127.0.0.1:8501</text><text x="435" y="150" font-size="12">• sert index.html / CSS / JS</text><text x="435" y="170" font-size="12">• relaie /api/* → api:5000</text>
+        <rect x="700" y="80" width="240" height="200" rx="10" fill="#fff" stroke="#0f766e"/><text x="715" y="104" font-size="13" font-weight="700">Conteneur « api »</text><text x="715" y="126" font-size="12">Flask + Gunicorn · 5000 → Mac 127.0.0.1:5001</text><text x="715" y="150" font-size="12">• charge model.joblib</text><text x="715" y="170" font-size="12">• GET /health · /metrics</text><text x="715" y="190" font-size="12">• POST /predict (validation)</text><text x="715" y="210" font-size="12">• logs JSON structurés</text>
+        <line x1="660" y1="180" x2="698" y2="180" stroke="#5b6b85" stroke-width="2" marker-end="url(#ar)"/><text x="662" y="170" font-size="10" fill="#5b6b85">réseau</text>
+        <text x="420" y="300" font-size="12" fill="#5b6b85">Navigateur → http://127.0.0.1:8501 → formulaire → /api/predict → modèle → résultat</text>
+      </svg></div>
+      <div class="grid grid-3" style="margin-top:14px">
+        <div class="card"><h3>Pourquoi deux conteneurs ?</h3><p>Séparer le <em>site</em> (statique) de l'<em>API</em> (Python) permet de les mettre à jour, redémarrer et faire évoluer indépendamment : c'est le principe des micro-services.</p></div>
+        <div class="card"><h3>Pourquoi Nginx devant Flask ?</h3><p>Le navigateur ne parle qu'à Nginx (une seule origine, pas de problème CORS). Nginx relaie <code>/api/</code> vers Flask via le réseau interne Docker.</p></div>
+        <div class="card"><h3>Pourquoi 127.0.0.1 ?</h3><p>Les ports ne sont publiés que sur l'interface locale du Mac : rien n'est exposé sur le Wi-Fi de la salle de cours.</p></div>
+      </div>
+    </section>
+
+    <!-- 4. OUTILS -->
+    <section class="page" id="outils" data-title="Préparation des outils">
+      <h2>4. Préparation des outils (Mac)</h2>
+      <p class="lead">Avant de commencer, vérifiez que votre Mac dispose de tout le nécessaire.</p>
+      <ol class="steps">
+        <li><b>Ouvrir le Terminal</b> — <kbd>⌘</kbd>+<kbd>Espace</kbd>, tapez <code>Terminal</code>, <kbd>Entrée</kbd>. Le Terminal est l'outil pour taper des commandes.</li>
+        <li><b>Vérifier l'architecture</b><pre><code>uname -m</code></pre>Résultat attendu : <code>arm64</code> (Apple Silicon) ou <code>x86_64</code> (Intel).</li>
+        <li><b>Vérifier Docker Desktop</b> — ouvrez l'application <em>Docker Desktop</em> ; en bas à gauche doit apparaître <strong>« Engine running »</strong>. Puis :<pre><code>docker --version
+docker compose version
+docker info | head -20</code></pre></li>
+        <li><b>Vérifier Python (facultatif, pour les tests hors Docker)</b><pre><code>python3 --version</code></pre></li>
+        <li><b>Vérifier que les ports sont libres</b><pre><code>lsof -nP -iTCP:5001 -sTCP:LISTEN
+lsof -nP -iTCP:8501 -sTCP:LISTEN</code></pre>Aucune ligne = port libre. ⚠️ Sur macOS, le <strong>Récepteur AirPlay</strong> (processus <code>ControlCenter</code>) occupe le port <strong>5000</strong> : c'est pourquoi l'API est publiée sur <strong>5001</strong> côté Mac (le conteneur, lui, écoute toujours sur 5000).</li>
+      </ol>
+      <div class="callout"><b>Erreur fréquente</b><code>Cannot connect to the Docker daemon</code> → Docker Desktop n'est pas lancé. Ouvrez-le et attendez « Engine running ».</div>
+    </section>
+
+    <!-- 5. DATASET -->
+    <section class="page" id="dataset" data-title="Dataset">
+      <h2>5. Le dataset synthétique</h2>
+      <p class="lead">1 000 étudiants fictifs générés avec une <strong>graine aléatoire fixe</strong> (<code>seed = 42</code>) : tout le monde obtient exactement les mêmes données.</p>
+      <div class="sim">
+        <header><div><b>Dataset interactif</b> <span class="tag sim">Simulation (génération JS locale)</span><br><span class="mini">Objectif : explorer, trier et filtrer un échantillon. Consigne : réglez le nombre de lignes, cliquez sur un en-tête pour trier.</span></div>
+          <div class="row"><label class="mini">Lignes <input type="number" id="dsN" value="12" min="5" max="60" style="width:70px"></label><button class="btn-sm btn-primary" data-act="ds-gen">Générer</button><button class="btn-sm" data-act="ds-reset">↺</button></div></header>
+        <div id="dsTable"></div>
+        <div class="out" id="dsOut"></div>
+        <div class="expl"><b>Explication :</b> l'étiquette est tirée au sort selon une probabilité qui dépend des trois variables ; d'où des cas « surprenants » (bonne note mais échec) qui bornent l'accuracy atteignable. <b>Vérification :</b> le taux de réussite doit tourner autour de 65-70 %.</div>
+      </div>
+      <h3>Visualisation des variables <span class="tag sim">Simulation</span></h3>
+      <div class="sim"><header><div>Objectif : voir quelle variable sépare le mieux les deux classes. Consigne : choisissez la variable.</div>
+        <div class="row"><select id="vizVar" style="width:160px"><option value="note">note</option><option value="absences">absences</option><option value="participation">participation</option></select><button class="btn-sm" data-act="viz-reset">↺</button></div></header>
+        <div id="vizChart"></div>
+        <div class="expl" id="vizExpl"></div></div>
+      <div class="grid grid-2">
+        <figure class="fig card"><img src="assets/distributions_v1.png" alt="Distributions des trois variables par classe"><figcaption>Figure réelle produite par le notebook : histogrammes par classe (vert = réussite, rouge = échec).</figcaption></figure>
+        <div class="card"><h3>Code de génération (extrait)</h3><pre><code>rng = np.random.default_rng(42)
+note = np.clip(rng.normal(11.5, 3.2, n), 0, 20)
+absences = np.clip(rng.poisson(5, n), 0, 30)
+participation = np.clip(rng.normal(6, 2, n), 0, 10)
+score = 0.55*(note-10) - 0.18*(absences-5) + 0.35*(participation-5)
+proba = 1/(1+np.exp(-score))
+reussite = (rng.random(n) &lt; proba).astype(int)</code></pre></div>
+      </div>
+    </section>
+
+    <!-- 6. COLAB -->
+    <section class="page" id="colab" data-title="Google Colab">
+      <h2>6. Google Colab</h2>
+      <p class="lead">Colab est un Jupyter Notebook hébergé par Google : du Python dans le navigateur, gratuit, sans installation.</p>
+      <ol class="steps">
+        <li><b>Ouvrir</b> <a href="https://colab.research.google.com" target="_blank" rel="noopener">colab.research.google.com</a> et se connecter avec un compte Google.</li>
+        <li><b>Importer le notebook</b> : <em>Fichier → Importer un notebook → Importer</em>, choisir <code>colab/mlops_lab_student_success.ipynb</code>.</li>
+        <li><b>Exécuter</b> une cellule : cliquer dedans puis <kbd>⇧</kbd>+<kbd>Entrée</kbd>. Ou <em>Exécution → Tout exécuter</em>.</li>
+        <li><b>Observer</b> : les sorties apparaissent sous chaque cellule (tableaux, graphiques, JSON des métriques).</li>
+        <li><b>Télécharger</b> : la dernière cellule crée <code>artifacts_v1.zip</code> et le télécharge dans votre dossier <em>Téléchargements</em>.</li>
+      </ol>
+      <div class="grid grid-2">
+        <div class="card"><h3>Structure du notebook (14 parties)</h3><ol class="mini" style="columns:2"><li>Installation / versions</li><li>Génération du dataset</li><li>Exploration</li><li>Visualisations</li><li>Prétraitement</li><li>Entraînement</li><li>Prédictions</li><li>Évaluation</li><li>Matrice de confusion</li><li>Interprétation</li><li>Export des artefacts</li><li>Rechargement</li><li>Téléchargement</li><li>Exercices corrigés</li></ol></div>
+        <div class="card"><h3>Erreur fréquente</h3><p><code>ModuleNotFoundError</code> → relancez la cellule 1 (installation). <code>Runtime disconnected</code> → <em>Exécution → Redémarrer et tout exécuter</em> ; Colab coupe les sessions inactives.</p><div class="callout"><b>Pas de Colab ?</b>Le même code s'exécute localement : <code>python3 training/train.py --version 1</code>.</div></div>
+      </div>
+    </section>
+
+    <!-- 7. PRETRAITEMENT -->
+    <section class="page" id="pretraitement" data-title="Prétraitement">
+      <h2>7. Prétraitement et séparation train / test</h2>
+      <p class="lead">Deux décisions clés : <strong>standardiser</strong> les variables et <strong>réserver</strong> des données de test que le modèle ne verra jamais.</p>
+      <div class="sim"><header><div><b>Séparation train/test</b> <span class="tag sim">Simulation</span><br><span class="mini">Objectif : comprendre test_size. Consigne : déplacez le curseur.</span></div><button class="btn-sm" data-act="split-reset">↺</button></header>
+        <input type="range" id="splitR" min="10" max="50" value="20"><div id="splitViz" style="margin-top:10px"></div><div class="out" id="splitOut"></div>
+        <div class="expl"><b>Explication :</b> plus le test est grand, plus la mesure est fiable… mais moins il reste de données pour apprendre. 20 % est un compromis classique. <b>Vérification :</b> avec 1 000 lignes et 20 %, on obtient 800 / 200.</div></div>
+      <div class="grid grid-2">
+        <div class="card"><h3>Pourquoi StandardScaler ?</h3><p>Les variables n'ont pas la même échelle (0-20, 0-30, 0-10). La standardisation ramène chacune à une moyenne 0 et un écart-type 1 : les poids deviennent comparables et l'optimisation converge mieux.</p></div>
+        <div class="card"><h3>Pourquoi un Pipeline ?</h3><pre><code>Pipeline([("scaler", StandardScaler()),
+          ("clf", LogisticRegression())])</code></pre><p>Le scaler est <em>appris</em> sur le train et <em>sauvegardé avec</em> le modèle : à l'inférence, l'API applique automatiquement la même transformation. Pas de fuite, pas d'oubli.</p></div>
+      </div>
+      <div class="callout danger"><b>Fuite de données (data leakage)</b>Ajuster le scaler sur <em>toutes</em> les données (test compris) gonfle artificiellement les performances. Le Pipeline + <code>train_test_split</code> avant <code>fit</code> évite ce piège.</div>
+    </section>
+
+    <!-- 8. TRAINING -->
+    <section class="page" id="training" data-title="Training">
+      <h2>8. Entraînement du modèle</h2>
+      <p class="lead">Une <strong>régression logistique</strong> : simple, rapide, explicable. Elle apprend un poids par variable et transforme la somme pondérée en probabilité (sigmoïde).</p>
+      <div class="grid grid-2">
+        <div class="card"><h3>Le code</h3><pre><code>model = Pipeline([
+  ("scaler", StandardScaler()),
+  ("clf", LogisticRegression(max_iter=1000, random_state=42))
+])
+model.fit(X_train, y_train)</code></pre><p><code>fit</code> = apprendre. <code>random_state</code> = reproductibilité.</p></div>
+        <figure class="fig card"><img src="assets/feature_importance_v1.png" alt="Poids des variables du modèle v1"><figcaption>Poids réels appris par le modèle v1 : la note domine, les absences pèsent négativement.</figcaption></figure>
+      </div>
+      <div class="callout ok"><b>Lecture des poids</b>Poids positif → la variable augmente la probabilité de réussite ; négatif → la diminue. Le modèle a « redécouvert » la logique de génération du dataset.</div>
+      <h3>Et si l'on changeait de modèle ?</h3><p>Le Pipeline rend l'échange trivial : remplacer <code>LogisticRegression</code> par <code>RandomForestClassifier</code> suffit (c'est ce que fait la v2, section 16). La forêt aléatoire capture des interactions non linéaires mais est moins lisible.</p>
+    </section>
+
+    <!-- 9. EVALUATION -->
+    <section class="page" id="evaluation" data-title="Évaluation">
+      <h2>9. Évaluation</h2>
+      <p class="lead">Mesurer sur le jeu de <strong>test</strong>, jamais sur le train.</p>
+      <div class="grid grid-4" id="metricCards">
+        <div class="card kpi"><span class="v" id="mAcc">—</span><span class="l">Accuracy</span></div>
+        <div class="card kpi"><span class="v" id="mPrec">—</span><span class="l">Précision</span></div>
+        <div class="card kpi"><span class="v" id="mRec">—</span><span class="l">Rappel</span></div>
+        <div class="card kpi"><span class="v" id="mF1">—</span><span class="l">F1-score</span></div>
+      </div>
+      <p class="mini" id="metricSrc" style="margin-top:6px"></p>
+      <div class="sim"><header><div><b>Matrice de confusion interactive</b> <span class="tag sim">Simulation</span><br><span class="mini">Objectif : relier les 4 cases aux métriques. Consigne : modifiez les valeurs ; les métriques se recalculent.</span></div><button class="btn-sm" data-act="cm-reset">↺ Valeurs réelles du modèle actif</button></header>
+        <div class="grid grid-2">
+          <div class="cm" id="cmGrid">
+            <div class="h"></div><div class="h">Prédit 0</div><div class="h">Prédit 1</div>
+            <div class="h">Réel 0</div><div class="tn"><input type="number" id="cmTN" value="40" min="0" style="width:70px;text-align:center"></div><div class="fp"><input type="number" id="cmFP" value="25" min="0" style="width:70px;text-align:center"></div>
+            <div class="h">Réel 1</div><div class="fn"><input type="number" id="cmFN" value="20" min="0" style="width:70px;text-align:center"></div><div class="tp"><input type="number" id="cmTP" value="115" min="0" style="width:70px;text-align:center"></div>
+          </div>
+          <div class="out" id="cmOut"></div>
+        </div>
+        <div class="expl"><b>Explication :</b> Accuracy = (VP+VN)/total · Précision = VP/(VP+FP) · Rappel = VP/(VP+FN) · F1 = 2·P·R/(P+R). <b>Vérification :</b> mettez FP = 0 → la précision devient 1,0.</div></div>
+      <figure class="fig card"><img src="assets/confusion_matrix_v1.png" alt="Matrice de confusion réelle v1" style="max-width:380px"><figcaption>Matrice de confusion réelle du modèle v1 (200 étudiants de test).</figcaption></figure>
+    </section>
+
+    <!-- 10. ARTEFACTS -->
+    <section class="page" id="artefacts" data-title="Artefacts">
+      <h2>10. Les artefacts : une version = trois fichiers</h2>
+      <div class="grid grid-3">
+        <div class="card"><h3>📦 model.joblib</h3><p>Le Pipeline sérialisé (scaler + modèle). Se recharge avec <code>joblib.load</code>.</p></div>
+        <div class="card"><h3>📈 metrics.json</h3><p>Accuracy, précision, rappel, F1, matrice de confusion, tailles train/test.</p></div>
+        <div class="card"><h3>🪪 metadata.json</h3><p>Version, date, graine, versions des bibliothèques, features, plages valides, avertissement.</p></div>
+      </div>
+      <h3>Métadonnées du modèle actuellement déployé <span class="tag real">Données réelles de l'API</span></h3>
+      <pre><code id="metaDump">chargement…</code></pre>
+      <h3>Transfert Colab → Mac</h3>
+      <ol class="steps"><li>Dans <em>Téléchargements</em>, double-cliquez sur <code>artifacts_v1.zip</code> pour le décompresser.</li><li>Copiez <code>model.joblib</code>, <code>metrics.json</code>, <code>metadata.json</code> dans <code>MLOPS-LAB-STUDENT-SUCCESS/artifacts/</code>.</li><li>Vérifiez :<pre><code>ls -la artifacts/</code></pre></li></ol>
+    </section>
+
+    <!-- 11. API -->
+    <section class="page" id="api" data-title="API Flask">
+      <h2>11. L'API REST Flask</h2>
+      <p class="lead">Une API REST expose le modèle à n'importe quel client (navigateur, application, script) par HTTP et JSON.</p>
+      <div class="grid grid-2">
+        <div class="card"><h3>Routes</h3><table><tr><th>Méthode</th><th>Route</th><th>Rôle</th></tr>
+          <tr><td>GET</td><td><code>/health</code></td><td>L'API est-elle vivante ? Quelle version ?</td></tr>
+          <tr><td>GET</td><td><code>/metadata</code></td><td>Métadonnées + métriques</td></tr>
+          <tr><td>POST</td><td><code>/predict</code></td><td>Prédiction à partir d'un JSON</td></tr>
+          <tr><td>GET</td><td><code>/metrics</code></td><td>Compteurs de monitoring</td></tr>
+          <tr><td>GET</td><td><code>/logs</code></td><td>50 dernières prédictions</td></tr>
+          <tr><td>GET</td><td><code>/versions</code></td><td>Versions disponibles</td></tr></table></div>
+        <div class="card"><h3>Extrait de code</h3><pre><code>@app.post("/predict")
+def predict():
+    clean, err = validate(request.get_json())
+    if err:
+        return jsonify({"error": err}), 400
+    X = pd.DataFrame([clean], columns=FEATURES)
+    pred = int(MODEL.predict(X)[0])
+    proba = float(MODEL.predict_proba(X)[0][1])
+    return jsonify({"prediction": pred,
+                    "probability_success": proba})</code></pre></div>
+      </div>
+      <div class="sim"><header><div><b>Simulateur de requêtes HTTP</b> <span class="tag real">Requêtes réelles vers l'API</span><br><span class="mini">Objectif : comprendre GET/POST, codes 200/400/404. Consigne : choisissez une requête et envoyez-la.</span></div><button class="btn-sm" data-act="http-reset">↺</button></header>
+        <div class="row"><select id="httpSel" style="width:auto">
+          <option value="GET /health">GET /health</option><option value="GET /metadata">GET /metadata</option><option value="POST /predict ok">POST /predict (valide)</option><option value="POST /predict bad">POST /predict (note = 25 → erreur 400)</option><option value="POST /predict missing">POST /predict (champ manquant → 400)</option><option value="GET /predict">GET /predict (mauvaise méthode → 405)</option><option value="GET /inconnu">GET /inconnu (→ 404)</option></select><button class="btn-primary btn-sm" data-act="http-send">Envoyer</button></div>
+        <pre style="margin-top:10px"><code id="httpReq">Requête…</code></pre><pre><code id="httpRes">Réponse…</code></pre>
+        <div class="expl"><b>Explication :</b> 200 = succès, 400 = requête invalide (c'est <em>votre</em> JSON qui est faux), 404 = route inconnue, 405 = mauvaise méthode. <b>Vérification :</b> la réponse d'un <code>/predict</code> valide contient <code>"mode": "Modèle réel"</code>.</div></div>
+      <h3>Depuis le Terminal (curl)</h3>
+      <pre><code>curl -s http://127.0.0.1:5001/health
+curl -s -X POST http://127.0.0.1:5001/predict \
+  -H "Content-Type: application/json" \
+  -d '{"note": 14, "absences": 2, "participation": 8}'</code></pre>
+    </section>
+
+    <!-- 12. DOCKER -->
+    <section class="page" id="docker" data-title="Docker">
+      <h2>12. Comprendre Docker</h2>
+      <div class="grid grid-4">
+        <div class="card"><h3>🧾 Dockerfile</h3><p>La <em>recette</em> : image de base, dépendances, code, commande de démarrage.</p></div>
+        <div class="card"><h3>💿 Image</h3><p>Le <em>résultat figé</em> de la recette, versionné, partageable.</p></div>
+        <div class="card"><h3>📦 Conteneur</h3><p>Une <em>instance en cours d'exécution</em> d'une image, isolée.</p></div>
+        <div class="card"><h3>🗄️ Volume</h3><p>Un espace de stockage qui <em>survit</em> au conteneur.</p></div>
+      </div>
+      <div class="callout"><b>Analogie</b>Dockerfile = recette de cuisine · Image = plat surgelé · Conteneur = plat réchauffé et servi · Volume = le Tupperware qu'on garde.</div>
+      <div class="grid grid-2">
+        <div class="card"><h3>Dockerfile.api (commenté)</h3><pre><code>FROM python:3.12-slim          # image de base légère
+WORKDIR /app                    # dossier de travail
+COPY api/requirements.txt .     # dépendances d'abord (cache)
+RUN pip install --no-cache-dir -r requirements.txt
+COPY api/app.py .               # le code
+COPY artifacts/ ./artifacts/    # le modèle
+USER appuser                    # pas de root
+EXPOSE 5000
+HEALTHCHECK CMD python -c "..." # sonde /health
+CMD ["gunicorn","--bind","0.0.0.0:5000","app:app"]</code></pre></div>
+        <div class="sim"><header><div><b>Terminal Docker pédagogique</b> <span class="tag sim">Simulation</span><br><span class="mini">Objectif : mémoriser les commandes. Consigne : tapez <code>help</code>, puis <code>docker ps</code>, <code>docker images</code>, <code>docker compose up -d</code>…</span></div><button class="btn-sm" data-act="term-reset">↺</button></header>
+          <div class="terminal" id="term"><div class="dim">Terminal simulé — les commandes ne touchent pas votre Mac.</div><div class="in"><span>$</span><input id="termIn" placeholder="docker ps" aria-label="commande"></div></div></div>
+      </div>
+    </section>
+
+    <!-- 13. DEPLOIEMENT -->
+    <section class="page" id="deploiement" data-title="Déploiement">
+      <h2>13. Déploiement avec Docker Compose</h2>
+      <p class="lead">Un seul fichier, <code>compose.yaml</code>, décrit les deux services, leur réseau et leurs ports.</p>
+      <div class="grid grid-2">
+        <div class="card"><h3>compose.yaml (essentiel)</h3><pre><code>services:
+  api:
+    build: { context: ., dockerfile: Dockerfile.api }
+    ports: ["127.0.0.1:5001:5000"]   # 5001 côté Mac
+    healthcheck: { test: [...], interval: 15s }
+  frontend:
+    build: { context: ., dockerfile: Dockerfile.frontend }
+    ports: ["127.0.0.1:8501:80"]
+    depends_on:
+      api: { condition: service_healthy }
+networks:
+  mlops-net: { driver: bridge }</code></pre></div>
+        <div class="card"><h3>Commandes</h3><ol class="steps">
+          <li><b>Se placer dans le projet</b><pre><code>cd ~/Documents/MLOPS-LAB-STUDENT-SUCCESS</code></pre></li>
+          <li><b>Construire et démarrer</b><pre><code>docker compose up -d --build</code></pre><code>-d</code> = en arrière-plan, <code>--build</code> = reconstruire les images.</li>
+          <li><b>Vérifier</b><pre><code>docker compose ps
+docker compose logs -f api</code></pre></li>
+          <li><b>Ouvrir</b> <a href="http://127.0.0.1:8501" target="_blank" rel="noopener">http://127.0.0.1:8501</a></li>
+          <li><b>Arrêter</b><pre><code>docker compose down</code></pre></li></ol></div>
+      </div>
+      <div class="callout ok"><b>Résultat attendu</b><code>docker compose ps</code> affiche <code>mlops-api</code> et <code>mlops-frontend</code> avec l'état <strong>running (healthy)</strong>. Dans Docker Desktop, les deux conteneurs apparaissent sous le projet <em>mlops-lab-student-success</em>.</div>
+      <div class="callout warn"><b>Erreur fréquente</b><code>port is already allocated</code> → un autre programme utilise 5000 ou 8501 (AirPlay !). Changez le port de gauche dans <code>compose.yaml</code> (ex. <code>127.0.0.1:5002:5000</code>).</div>
+    </section>
+
+    <!-- 14. SIMULATEUR DE PREDICTION -->
+    <section class="page" id="simulateur" data-title="Simulateur de prédiction">
+      <h2>14. Prédire réellement</h2>
+      <p class="lead">Ce formulaire envoie vos valeurs à <code>/api/predict</code> ; la réponse vient du <strong>modèle Python</strong> dans le conteneur. Aucun calcul n'est simulé en JavaScript.</p>
+      <div class="grid grid-2">
+        <div class="card"><h3>Formulaire <span class="tag real" id="predMode">Modèle réel</span></h3>
+          <div class="field"><label>Note sur 20 : <b id="vNote">14</b></label><input type="range" id="fNote" min="0" max="20" step="0.5" value="14"></div>
+          <div class="field" style="margin-top:10px"><label>Absences : <b id="vAbs">2</b></label><input type="range" id="fAbs" min="0" max="30" step="1" value="2"></div>
+          <div class="field" style="margin-top:10px"><label>Participation sur 10 : <b id="vPart">8</b></label><input type="range" id="fPart" min="0" max="10" step="0.5" value="8"></div>
+          <div class="row" style="margin-top:14px"><button class="btn-primary" data-act="predict">🔮 Prédire</button><button data-act="pred-example" data-ex="good">Exemple bon élève</button><button data-act="pred-example" data-ex="risk">Exemple à risque</button><button data-act="pred-reset">↺</button></div>
+          <p class="mini" style="margin-top:10px">Requête envoyée : <code id="predReq">—</code></p></div>
+        <div class="card"><h3>Résultat</h3><div id="predOut" class="out" style="min-height:120px">Aucune prédiction pour l'instant.</div>
+          <div class="bar" style="margin-top:12px"><span id="predBar" style="width:0%"></span></div><p class="mini" id="predProba"></p>
+          <details><summary>Réponse JSON brute</summary><pre><code id="predJson">—</code></pre></details></div>
+      </div>
+      <div class="callout warn"><b>Rappel</b>Le résultat est une <em>probabilité statistique sur des données fictives</em>, pas un jugement sur une personne.</div>
+    </section>
+
+    <!-- 15. MONITORING -->
+    <section class="page" id="monitoring" data-title="Monitoring">
+      <h2>15. Monitoring <span class="tag real">Données réelles de l'API</span></h2>
+      <p class="lead">Une fois déployé, un modèle doit être observé : volume de requêtes, erreurs, latence, répartition des prédictions.</p>
+      <div class="row" style="margin-bottom:10px"><button class="btn-sm btn-primary" data-act="mon-refresh">↻ Actualiser</button><label class="mini"><input type="checkbox" id="monAuto" checked> auto (5 s)</label><button class="btn-sm" data-act="mon-load">⚡ Générer 20 requêtes de test</button></div>
+      <div class="grid grid-4">
+        <div class="card kpi"><span class="v" id="monReq">—</span><span class="l">Requêtes</span></div>
+        <div class="card kpi"><span class="v" id="monPred">—</span><span class="l">Prédictions</span></div>
+        <div class="card kpi"><span class="v" id="monErr">—</span><span class="l">Erreurs (4xx)</span></div>
+        <div class="card kpi"><span class="v" id="monLat">—</span><span class="l">Latence moy. / max (ms)</span></div>
+      </div>
+      <div class="grid grid-2" style="margin-top:14px">
+        <div class="card"><h3>Répartition des prédictions</h3><div id="monDist"></div></div>
+        <div class="card"><h3>Dernières prédictions (logs)</h3><div id="monLogs" style="max-height:260px;overflow:auto"></div></div>
+      </div>
+      <div class="callout"><b>Dans le Terminal</b><pre><code>docker compose logs -f api     # logs JSON structurés en direct
+curl -s http://127.0.0.1:5001/metrics</code></pre></div>
+    </section>
+
+    <!-- 16. VERSIONNEMENT -->
+    <section class="page" id="versionnement" data-title="Versionnement">
+      <h2>16. Versionnement et réentraînement</h2>
+      <p class="lead">Les données évoluent (<em>data drift</em>) : une nouvelle promotion n'a pas le même profil. On réentraîne un modèle <strong>v2</strong>, on le compare à la v1, puis on redéploie.</p>
+      <ol class="steps">
+        <li><b>Réentraîner</b> sur des données « dérivées » avec une forêt aléatoire :<pre><code>python3 training/train.py --version 2 --drift 0.6 --n 1500 --model rf</code></pre></li>
+        <li><b>Comparer</b> v1 et v2 (comparateur ci-dessous).</li>
+        <li><b>Redéployer</b> :<pre><code>docker compose up -d --build api
+curl -s http://127.0.0.1:5001/health   # model_version doit afficher 2</code></pre></li>
+        <li><b>Revenir à la v1</b> si besoin : <code>MODEL_FILE=model_v1.joblib docker compose up -d api</code>.</li>
+      </ol>
+      <div class="sim"><header><div><b>Comparateur v1 / v2</b> <span class="tag real">Données réelles (/api/versions)</span><br><span class="mini">Objectif : décider quelle version déployer. Consigne : cliquez sur « Charger ».</span></div><div class="row"><button class="btn-sm btn-primary" data-act="ver-load">Charger</button></div></header>
+        <div id="verTable"></div><div class="out" id="verOut">—</div>
+        <div class="expl"><b>Explication :</b> ne comparez des versions que sur <em>le même</em> jeu de test, ou acceptez que la v2 soit évaluée sur ses propres données. <b>Vérification :</b> la version marquée « active » doit correspondre au badge en haut de page.</div></div>
+    </section>
+
+    <!-- 17. TESTS -->
+    <section class="page" id="tests" data-title="Tests">
+      <h2>17. Tests automatisés (pytest)</h2>
+      <div class="grid grid-3">
+        <div class="card"><h3>Unitaires</h3><p><code>tests/test_training.py</code> : dataset reproductible, plages, absence de fuite, métriques cohérentes, rechargement du modèle.</p></div>
+        <div class="card"><h3>API</h3><p><code>tests/test_api.py</code> : routes, codes HTTP, validation des entrées, monitoring.</p></div>
+        <div class="card"><h3>Intégration</h3><p><code>tests/test_integration.py</code> : pile Docker démarrée, Nginx → Flask, prédiction depuis le proxy.</p></div>
+      </div>
+      <pre><code>pip install -r requirements.txt
+python3 -m pytest tests/test_training.py tests/test_api.py -v
+docker compose up -d --build
+python3 -m pytest tests/test_integration.py -v</code></pre>
+      <div class="callout ok"><b>Résultat attendu</b>Toutes les lignes se terminent par <code>PASSED</code>. Un test <code>SKIPPED</code> dans l'intégration signifie que la pile Docker n'est pas démarrée.</div>
+    </section>
+
+    <!-- 18. EXERCICES -->
+    <section class="page" id="exercices" data-title="Exercices">
+      <h2>18. Exercices pratiques (progressifs)</h2>
+      <details><summary>★ Exercice 1 — Première prédiction en ligne de commande</summary><p>Avec <code>curl</code>, obtenez la prédiction pour un étudiant ayant 9/20, 12 absences et 3/10 de participation.</p><details><summary>Corrigé</summary><pre><code>curl -s -X POST http://127.0.0.1:5001/predict -H "Content-Type: application/json" -d '{"note":9,"absences":12,"participation":3}'</code></pre><p>Résultat : <code>"prediction": 0</code>, probabilité de réussite faible (≈ 0,2).</p></details></details>
+      <details><summary>★ Exercice 2 — Provoquer une erreur 400</summary><p>Envoyez une participation de 15. Que répond l'API et pourquoi ?</p><details><summary>Corrigé</summary><p>Code 400, message « Le champ 'participation' doit être compris entre 0 et 10 ». La validation protège le modèle contre des entrées hors domaine.</p></details></details>
+      <details><summary>★★ Exercice 3 — Changer le port du frontend</summary><p>Publiez le frontend sur 8080 au lieu de 8501.</p><details><summary>Corrigé</summary><p>Dans <code>compose.yaml</code> : <code>"127.0.0.1:8080:80"</code>, puis <code>docker compose up -d frontend</code>. Nginx écoute toujours 80 <em>dans</em> le conteneur ; seul le port publié change.</p></details></details>
+      <details><summary>★★ Exercice 4 — Lire les logs structurés</summary><p>Lancez 3 prédictions puis retrouvez-les dans les logs du conteneur api.</p><details><summary>Corrigé</summary><pre><code>docker compose logs api | grep '"msg": "prediction"'</code></pre></details></details>
+      <details><summary>★★★ Exercice 5 — Entraîner une v3 et la déployer</summary><p>Entraînez une v3 (régression logistique, drift 0,3, 2 000 lignes), comparez-la et déployez-la.</p><details><summary>Corrigé</summary><pre><code>python3 training/train.py --version 3 --drift 0.3 --n 2000 --model logreg
+docker compose up -d --build api
+curl -s http://127.0.0.1:5001/versions</code></pre></details></details>
+      <details><summary>★★★ Exercice 6 — Ajouter une route /features</summary><p>Ajoutez à l'API une route GET qui renvoie la liste des features et leurs plages.</p><details><summary>Corrigé</summary><pre><code>@app.get("/features")
+def features():
+    return jsonify({"features": FEATURES, "ranges": RANGES})</code></pre><p>Puis reconstruire l'image : <code>docker compose up -d --build api</code>.</p></details></details>
+    </section>
+
+    <!-- 19. QCM -->
+    <section class="page" id="qcm" data-title="QCM">
+      <h2>19. QCM final <span class="tag sim">Auto-évaluation</span></h2>
+      <p class="lead">12 questions. Choisissez une réponse par question puis cliquez sur « Corriger ».</p>
+      <div class="qcm" id="qcmBody"></div>
+      <div class="row" style="margin-top:14px"><button class="btn-primary" data-act="qcm-check">✔ Corriger</button><button data-act="qcm-reset">↺ Recommencer</button><span id="qcmScore" style="font-weight:700"></span></div>
+      <div class="bar" style="margin-top:10px"><span id="qcmBar" style="width:0%"></span></div>
+    </section>
+
+    <!-- 20. GLOSSAIRE -->
+    <section class="page" id="glossaire" data-title="Glossaire">
+      <h2>20. Glossaire</h2>
+      <input type="text" id="gloSearch" placeholder="Rechercher un terme…" style="max-width:360px;margin-bottom:12px">
+      <dl class="glossaire" id="glo"></dl>
+    </section>
+
+    <!-- 21. DEPANNAGE -->
+    <section class="page" id="depannage" data-title="Dépannage">
+      <h2>21. Dépannage</h2>
+      <table><tr><th>Symptôme</th><th>Cause probable</th><th>Solution</th></tr>
+        <tr><td><code>Cannot connect to the Docker daemon</code></td><td>Docker Desktop fermé</td><td>Ouvrir Docker Desktop, attendre « Engine running »</td></tr>
+        <tr><td><code>port is already allocated</code></td><td>Port 5001/8501 occupé (autre projet) — 5000 est pris par AirPlay</td><td>Changer le port gauche dans <code>compose.yaml</code> ou libérer le port</td></tr>
+        <tr><td>Badge « API hors ligne » dans ce site</td><td>Conteneur api arrêté ou unhealthy</td><td><code>docker compose ps</code>, <code>docker compose logs api</code>, <code>docker compose up -d api</code></td></tr>
+        <tr><td><code>502 Bad Gateway</code> sur /api/</td><td>Nginx démarré avant Flask</td><td>Attendre 10 s (healthcheck) ou <code>docker compose restart frontend</code></td></tr>
+        <tr><td><code>FileNotFoundError: model.joblib</code></td><td>Artefacts absents du dossier <code>artifacts/</code></td><td>Relancer le notebook ou <code>python3 training/train.py --version 1</code></td></tr>
+        <tr><td>Prédiction identique quelles que soient les valeurs</td><td>Mauvais ordre des colonnes</td><td>Utiliser <code>pd.DataFrame([...], columns=FEATURES)</code></td></tr>
+        <tr><td>Le site ne se met pas à jour après modification</td><td>Image non reconstruite / cache navigateur</td><td><code>docker compose up -d --build frontend</code> puis <kbd>⌘⇧R</kbd></td></tr>
+        <tr><td><code>no space left on device</code></td><td>Images Docker accumulées</td><td><code>docker system prune</code> (⚠️ supprime les images inutilisées)</td></tr>
+        <tr><td>Erreur de plateforme (amd64/arm64)</td><td>Image non multi-arch</td><td>Les images utilisées (python, nginx) sont multi-arch ; sinon <code>--platform linux/amd64</code></td></tr>
+      </table>
+    </section>
+
+    <footer class="foot"><span>MLOps Lab — Student Success · ENSET Mohammedia · Université Hassan II de Casablanca · Prof. Azeddine KHIAT</span><span>Données synthétiques · usage pédagogique</span></footer>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>

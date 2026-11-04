@@ -1,0 +1,45 @@
+{
+  "model_name": "student-success",
+  "version": 1,
+  "model_type": "logreg",
+  "trained_at": "2026-11-02T19:06:02+00:00",
+  "features": [
+    "note",
+    "absences",
+    "participation"
+  ],
+  "target": "reussite",
+  "feature_ranges": {
+    "note": [
+      0,
+      20
+    ],
+    "absences": [
+      0,
+      30
+    ],
+    "participation": [
+      0,
+      10
+    ]
+  },
+  "dataset": {
+    "file": "students_v1.csv",
+    "rows": 1000,
+    "drift": 0.0,
+    "seed": 42
+  },
+  "split": {
+    "test_size": 0.2,
+    "random_state": 42,
+    "stratify": true
+  },
+  "libraries": {
+    "python": "3.12.16",
+    "scikit-learn": "1.9.1",
+    "pandas": "3.1.0",
+    "numpy": "2.5.4",
+    "joblib": "1.6.0"
+  },
+  "disclaimer": "Modèle de démonstration pédagogique — ne pas utiliser pour des décisions académiques réelles."
+}

@@ -1,0 +1,11 @@
+.git
+__pycache__/
+*.pyc
+.pytest_cache/
+docs/
+colab/
+tests/
+data/
+monitoring/
+*.zip
+.DS_Store

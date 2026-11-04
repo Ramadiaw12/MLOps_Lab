@@ -1,0 +1,9 @@
+# ---- Image du frontend : Nginx sert le site statique et relaie /api/ vers Flask ----
+FROM nginx:1.27-alpine
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY frontend/ /usr/share/nginx/html/
+# Droits de lecture pour l'utilisateur nginx (les fichiers copiés depuis macOS peuvent être en 600)
+RUN chmod -R a+rX /usr/share/nginx/html
+EXPOSE 80
+HEALTHCHECK --interval=15s --timeout=3s --start-period=5s --retries=3 \
+  CMD wget -q -O /dev/null http://127.0.0.1/ || exit 1
