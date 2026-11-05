@@ -1,0 +1,45 @@
+{
+  "model_name": "student-success",
+  "version": 2,
+  "model_type": "rf",
+  "trained_at": "2026-11-04T20:33:36+00:00",
+  "features": [
+    "note",
+    "absences",
+    "participation"
+  ],
+  "target": "reussite",
+  "feature_ranges": {
+    "note": [
+      0,
+      20
+    ],
+    "absences": [
+      0,
+      30
+    ],
+    "participation": [
+      0,
+      10
+    ]
+  },
+  "dataset": {
+    "file": "students_v2.csv",
+    "rows": 1500,
+    "drift": 0.6,
+    "seed": 43
+  },
+  "split": {
+    "test_size": 0.2,
+    "random_state": 42,
+    "stratify": true
+  },
+  "libraries": {
+    "python": "3.12.16",
+    "scikit-learn": "1.9.1",
+    "pandas": "3.1.1",
+    "numpy": "2.5.4",
+    "joblib": "1.6.0"
+  },
+  "disclaimer": "Modèle de démonstration pédagogique — ne pas utiliser pour des décisions académiques réelles."
+}
