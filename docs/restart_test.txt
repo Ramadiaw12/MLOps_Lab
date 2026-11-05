@@ -1,0 +1,41 @@
+=== 1. Arrêt : docker compose down ===
+ Container mlops-frontend Stopping 
+ Container mlops-frontend Stopped 
+ Container mlops-frontend Removing 
+ Container mlops-frontend Removed 
+ Container mlops-api Stopping 
+ Container mlops-api Stopped 
+ Container mlops-api Removing 
+ Container mlops-api Removed 
+ Network mlops-lab-student-success_mlops-net Removing 
+ Network mlops-lab-student-success_mlops-net Removed 
+
+=== 2. Après arrêt (doit échouer) ===
+→ API injoignable : attendu
+
+=== 3. Redémarrage : docker compose up -d (sans rebuild) ===
+ Network mlops-lab-student-success_mlops-net Creating 
+ Network mlops-lab-student-success_mlops-net Creating 
+ Network mlops-lab-student-success_mlops-net Created 
+ Network mlops-lab-student-success_mlops-net Created 
+ Container mlops-api Creating 
+ Container mlops-api Created 
+ Container mlops-frontend Creating 
+ Container mlops-frontend Created 
+ Container mlops-api Starting 
+ Container mlops-api Started 
+ Container mlops-api Waiting 
+ Container mlops-api Healthy 
+ Container mlops-frontend Starting 
+ Container mlops-frontend Started 
+
+=== 4. Attente healthcheck ===
+NAME             IMAGE                       COMMAND                  SERVICE    CREATED          STATUS                    PORTS
+mlops-api        mlops-lab/api:latest        "gunicorn --bind 0.0…"   api        20 seconds ago   Up 19 seconds (healthy)   127.0.0.1:5001->5000/tcp
+mlops-frontend   mlops-lab/frontend:latest   "/docker-entrypoint.…"   frontend   20 seconds ago   Up 12 seconds (healthy)   127.0.0.1:8501->80/tcp
+
+=== 5. Après redémarrage ===
+{"model_type":"rf","model_version":2,"status":"ok","time":"2026-11-05T22:21:59+00:00"}
+
+{"disclaimer":"Mod\u00e8le de d\u00e9monstration p\u00e9dagogique \u2014 ne pas utiliser pour des d\u00e9cisions acad\u00e9miques r\u00e9elles.","input":{"absences":2.0,"note":14.0,"participation":8.0},"label":"R\u00e9ussite probable","latency_ms":66.66,"mode":"Mod\u00e8le r\u00e9el","model_type":"rf","model_version":2,"prediction":1,"probability_success":0.9654}
+
