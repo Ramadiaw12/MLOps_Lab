@@ -1,0 +1,54 @@
+ Image mlops-lab/api:latest Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 633B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile.api
+#2 transferring dockerfile: 1.20kB 0.0s done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/python:3.12-slim
+#3 DONE 0.0s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 133B done
+#4 DONE 0.0s
+
+#5 [1/7] FROM docker.io/library/python:3.12-slim
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 3.08MB 0.0s done
+#6 DONE 0.0s
+
+#7 [4/7] RUN pip install --no-cache-dir -r requirements.txt
+#7 CACHED
+
+#8 [2/7] WORKDIR /app
+#8 CACHED
+
+#9 [3/7] COPY api/requirements.txt ./requirements.txt
+#9 CACHED
+
+#10 [5/7] COPY api/app.py ./app.py
+#10 CACHED
+
+#11 [6/7] COPY artifacts/*.joblib artifacts/*.json ./artifacts/
+#11 DONE 0.1s
+
+#12 [7/7] RUN useradd -m appuser && chown -R appuser /app
+#12 DONE 1.2s
+
+#13 exporting to image
+#13 exporting layers 0.1s done
+#13 writing image sha256:772f26fd2fe2acd468c7477f1f4c352dccefc9d90d5a7b5c3c8c8247d85c8724 done
+#13 naming to docker.io/mlops-lab/api:latest done
+#13 DONE 0.1s
+
+#14 resolving provenance for metadata file
+#14 DONE 0.0s
+ Image mlops-lab/api:latest Built 
+ Container mlops-api Recreate 
+ Container mlops-api Recreated 
+ Container mlops-api Starting 
+ Container mlops-api Started 

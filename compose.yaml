@@ -12,7 +12,7 @@ services:
     ports:
       - "127.0.0.1:${API_PORT:-5001}:5000"   # accès direct à l'API (5001 car macOS AirPlay occupe 5000)
     environment:
-      - MODEL_FILE=model_v1.joblib
+      - MODEL_FILE=${MODEL_FILE:-model.joblib}
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:5000/health', timeout=2).status==200 else 1)"]
       interval: 15s
