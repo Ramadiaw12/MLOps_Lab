@@ -1,0 +1,23 @@
+=== docker compose ps ===
+NAME             IMAGE                       COMMAND                  SERVICE    CREATED             STATUS                       PORTS
+mlops-api        mlops-lab/api:latest        "gunicorn --bind 0.0…"   api        About an hour ago   Up About an hour (healthy)   127.0.0.1:5001->5000/tcp
+mlops-frontend   mlops-lab/frontend:latest   "/docker-entrypoint.…"   frontend   2 hours ago         Up 2 hours (healthy)         127.0.0.1:8501->80/tcp
+
+=== GET /health (direct 5000) ===
+{"model_type":"logreg","model_version":1,"status":"ok","time":"2026-11-04T22:00:36+00:00"}
+
+=== GET /api/health (via Nginx 8501) ===
+{"model_type":"logreg","model_version":1,"status":"ok","time":"2026-11-04T22:00:36+00:00"}
+
+=== POST /api/predict ===
+{"disclaimer":"Mod\u00e8le de d\u00e9monstration p\u00e9dagogique \u2014 ne pas utiliser pour des d\u00e9cisions acad\u00e9miques r\u00e9elles.","input":{"absences":2.0,"note":14.0,"participation":8.0},"label":"R\u00e9ussite probable","latency_ms":125.48,"mode":"Mod\u00e8le r\u00e9el","model_type":"logreg","model_version":1,"prediction":1,"probability_success":0.9636}
+
+=== POST /api/predict (invalide) ===
+{"error":"Le champ 'note' doit \u00eatre compris entre 0 et 20 (re\u00e7u : 25)."}
+
+=== GET / (frontend) ===
+HTTP 200, 45453 octets
+=== docker images ===
+WARNING: This output is designed for human readability. For machine-readable output, please use --format.
+mlops-lab/api:latest        5609c8dff690        471MB             0B   U    
+mlops-lab/frontend:latest   5e8c42690172       48.6MB             0B   U    
